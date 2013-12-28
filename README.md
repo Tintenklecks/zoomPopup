@@ -27,6 +27,7 @@ The sec on example creates a zoomPopup instance and then loads an image and show
     [popup setBlurRadius:10];
     [popup showPopup:image];
 
+!(zoomPopupScreenCast.mp4)
 
 ![Test App](s1.png)
 ![Version 1 Step 1](s2.png)
