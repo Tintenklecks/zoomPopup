@@ -103,7 +103,7 @@
     }
     
     darkView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width , height)];
-    
+    darkView.userInteractionEnabled = YES;
     darkView.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
     if (_blurRadius == 0) {
         darkView.backgroundColor = [UIColor blackColor];
