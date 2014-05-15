@@ -24,6 +24,8 @@
     
     
 	CGRect mainViewStartRect;
+	
+	BOOL isPresenting;
 }
 
 
@@ -92,41 +94,35 @@
 
 - (void)showPopup:(UIView *)viewToDisplay {
     
-    CGFloat width, height;
+    if (!isPresenting) {
     
-    if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].keyWindow.rootViewController.interfaceOrientation)) {
-        width = MIN(mainView.frame.size.width, mainView.frame.size.height);
-        height = MAX(mainView.frame.size.width, mainView.frame.size.height);
-    } else {
-        width = MAX(mainView.frame.size.width, mainView.frame.size.height);
-        height = MIN(mainView.frame.size.width, mainView.frame.size.height);
-    }
+    	CGFloat width, height;
     
-    darkView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width , height)];
+    	if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].keyWindow.rootViewController.interfaceOrientation)) {
+	 	width = MIN(mainView.frame.size.width, mainView.frame.size.height);
+        	height = MAX(mainView.frame.size.width, mainView.frame.size.height);
+    	} else {
+		width = MAX(mainView.frame.size.width, mainView.frame.size.height);
+        	height = MIN(mainView.frame.size.width, mainView.frame.size.height);
+    	}
     
-    darkView.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
-    if (_blurRadius == 0) {
-        darkView.backgroundColor = [UIColor blackColor];
-    } else {
-        darkView.image = [self imageWithView:mainView crop:mainView.bounds ];
-        darkView.image = [darkView.image stackBlur:_blurRadius];
-    }
-    
-
+    	darkView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width , height)];
+    	darkView.userInteractionEnabled = YES;
+    	darkView.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
+    	if (_blurRadius == 0) {
+        	darkView.backgroundColor = [UIColor blackColor];
+    	} else {
+        	darkView.image = [self imageWithView:mainView crop:mainView.bounds ];
+        	darkView.image = [darkView.image stackBlur:_blurRadius];
+    	}
     
 	popupView = [[UIView alloc] initWithFrame:CGRectInset(viewToDisplay.frame, -_borderSize, -_borderSize)];
 	popupView.backgroundColor = _borderColor;
 	viewToDisplay.center = CGPointMake(viewToDisplay.bounds.size.width / 2 + _borderSize, viewToDisplay.bounds.size.height / 2 + _borderSize);
 	[popupView addSubview:viewToDisplay];
-    popupView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin + UIViewAutoresizingFlexibleLeftMargin  + UIViewAutoresizingFlexibleRightMargin;
-    popupView.center = darkView.center;
+    	popupView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin + UIViewAutoresizingFlexibleLeftMargin  + UIViewAutoresizingFlexibleRightMargin;
+    	popupView.center = darkView.center;
 
-    
-    
-	
-	
-    
-    
 	if (_showCloseButton) {
 		closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		[closeButton addTarget:self action:@selector(closePopup) forControlEvents:UIControlEventTouchUpInside];
@@ -188,6 +184,9 @@
 	    popupView.layer.shadowOpacity = 0.5;
 	    popupView.layer.shadowRadius = _shadowRadius;
 	}];
+	
+	isPresenting = TRUE;
+    }
 }
 
 /**
@@ -211,6 +210,7 @@
 	    [sourceImageView removeFromSuperview];
 	    [darkView removeFromSuperview];
 	}];
+	isPresenting = FALSE;
 }
 
 
